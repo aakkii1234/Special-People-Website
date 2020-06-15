@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+    {% block body %}
+<input type="checkbox"id="openSidebar">
+    <label for="openSidebar" class="sidebarIconToggle">
+        <div class="spinner top"></div>
+        <div class="spinner middle"></div>
+        <div class="spinner bottom"></div> 
+    </label>
+         <div class="sidebar">
+         	<ul>
+           	<li><input class="in" type="file" id="default-btn" accept="image/*"/><label onclick="defaultBtnActive()" id="custom-btn"><i class="fa fa-camera-retro" aria-hidden="true"></i> Camera</label></li>
+            <li><input class="in" type="file" id="default-btn"/><label onclick="defaultBtnActive()" id="custom-btn">
+            	<i class="fas fa-upload"></i> Upload</label></li>
+            <li><label><i class="fas fa-language"></i> Translate</label></li>
+        </ul>
+    </div>
+</nav>
+</ul>   
+</div>	
+<!-- Preview section -->
+<center>
+<div class="container">
+    <div class="wrapper">
+        <div class="image">
+            <img id="img1" src="" alt="" width="450" height="350" />
+        </div>
+        <div class="content">
+        <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <div class="text">Preview</div>
+         </div>
+    <div id="cancel-btn"><i class="fas fa-times"></i></div>
+    <div class="file-name">file name here</div>
+    </div>
+    </div>
+</center>
+<!-- Audio player -->
+        <div id="main">
+			<div id="player">
+				<div id="buttons">
+					<button id="pre" onclick="pre()"><img src="{{ url_for('static', filename='images/Pre.png') }}" height="90%" width="90%"/></button>
+					<button id="play" onclick="playOrPauseSong()"><img src="{{ url_for('static', filename='images/Play.png') }}"/></button>
+					<button id="next" onclick="next()"><img src="{{ url_for('static', filename='images/Next.png') }}" height="90%" width="90%"/></button>
+				</div>
+            <div id="songTitle">Demo</div>
+                <div id="seek-bar">
+					<div id="fill"></div>
+					<div id="handle"></div>
+				</div>
+			</div>
+		</div>
+{% endblock %}
