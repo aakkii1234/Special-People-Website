@@ -2,18 +2,27 @@
 const wrapper=document.querySelector(".wrapper");
 const fileName=document.querySelector(".file-name");
 const cancelBtn=document.querySelector("#cancel-btn");
-const defaultBtn = document.querySelector("#default-btn");
-const customBtn = document.querySelector("#custom-btn");
+const defaultBtn = document.querySelector("#original-image");
+const cameraBtn = document.querySelector("#camera-btn");
+const uploadBtn = document.querySelector("#upload-btn");
 const img = document.querySelector("#img1");
 let regExp= /[ 0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
 // Variables for Audio
-var songs = ["static/Vakratunda-Mahakay-Shlok-Mp3-Ringtone.mp3","Song2.mp3","Song3.mp3"];
+var songs = [];
 var songTitle = document.getElementById("songTitle");
 var fillBar = document.getElementById("fill");
 var song = new Audio();
-	var currentSong = 0;    
+    var currentSong = 0;  
+    var currentTime = song.currentTime;  
     // Preview
-    function defaultBtnActive(){
+    /**
+     * Activate camera or upload button to take image input
+     * @param {String} clicked_id id of the clicked HTML attribute
+     */
+    function defaultBtnActive(clicked_id){
+       if(clicked_id=='camera-btn'){
+           defaultBtn.setAttribute('capture','environment');
+       }
        defaultBtn.click();
     }
     defaultBtn.addEventListener("change", function(){
@@ -37,11 +46,13 @@ var song = new Audio();
         }
     });
 // Audio player
-		window.onload = playSong;   
+        window.onload = playSong;   
         function playSong(){
-			song.src = songs[currentSong];  
-			songTitle.textContent = songs[currentSong]; 
-			song.play();    
+			song.src = "static/audio/"+songs[currentSong];  
+            songTitle.textContent = songs[currentSong]; 
+            song.currentTime=currentTime;
+            song.play();    
+
         }
 		function playOrPauseSong(){
 				if(song.paused){
@@ -58,18 +69,67 @@ var song = new Audio();
 				fillBar.style.width = position * 100 +'%';
 			});
 		function next(){
-			currentSong++;
-			if(currentSong > 2){
+            //currentSong++;
+            currentTime+=5;
+            /*
+            if(currentSong > 2){
 				currentSong = 0;
-			}
+			}*/
 			playSong();
 			$("#play img").attr("src","static/images/Pause.png");
 		}
 		function pre(){
-			currentSong--;
-			if(currentSong < 0){
+            //currentSong--;
+            currentTime-=5;
+            /*
+            if(currentSong < 0){
 				currentSong = 2;
-			}
+			}*/
 			playSong();
 			$("#play img").attr("src","static/images/Pause.png");
 		}
+
+
+//upload and scan image
+$(document).ready(function (e) {
+    $('form').on('submit',(function(e) {
+        
+        e.preventDefault();
+        var formData = new FormData(this);
+
+        $.ajax({
+            type:'POST',
+            url: $(this).attr('action'),
+            data:formData,
+            cache:false,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                // Show image container
+                $("#img1").attr('style','opacity:0.3');
+                $("#loader").show();
+               },
+            success:function(data){
+                $('#img1').attr("src","static/image/scanned/"+data.image);
+                $('#audioDownload').attr('href',"static/audio/"+data.text);
+                $('#audioDownload').attr('download',data.text);
+				songs[0]=data.text
+				playSong();
+				$("#play img").attr("src","static/images/Pause.png");
+				//song.src="static/audio/"+data.text;
+				//song.play()
+            },
+            complete:function(data){
+                // Hide image container
+                $("#img1").attr('style','opacity:1');
+                $("#loader").hide();
+               },
+            error: function(data){
+                //$('#errorAlert').text('Oops!! Something went wrong!!').show();
+                alert('Oops!! Soething went wrong!!')
+            }
+
+        });
+    }));
+
+});
